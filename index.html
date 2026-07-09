@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,43 +8,37 @@
 <title>Cris & Kevin</title>
 
 <style>
+
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
 }
 
-html,body{
+html, body{
     width:100%;
     height:100%;
     overflow:hidden;
     background:#000;
+    font-family:Arial, sans-serif;
 }
 
 section{
     position:fixed;
-    width:100%;
-    height:100%;
     top:0;
     left:0;
+    width:100%;
+    height:100%;
 }
 
 img{
     width:100%;
     height:100%;
     object-fit:cover;
+    display:block;
 }
 
 #inicio{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-#boton{
-    position:absolute;
-    width:100%;
-    height:100%;
     cursor:pointer;
 }
 
@@ -62,50 +57,72 @@ video{
 #final{
     display:none;
 }
-</style>
 
+</style>
 </head>
 
 <body>
 
+<!-- PORTADA -->
 <section id="inicio">
-    <img src="portada.jpg">
-    <div id="boton"></div>
+    <img src="portada.jpg" alt="Portada">
 </section>
 
+<!-- VIDEO -->
 <section id="videoPantalla">
-    <video id="video" playsinline>
+    <video id="video" playsinline preload="auto">
         <source src="video.mp4" type="video/mp4">
+        Tu navegador no soporta video HTML5.
     </video>
 </section>
 
+<!-- IMAGEN FINAL -->
 <section id="final">
-    <img src="final.jpg">
+    <img src="final.jpg" alt="Final">
 </section>
 
 <script>
 
-const boton = document.getElementById("boton");
 const inicio = document.getElementById("inicio");
 const videoPantalla = document.getElementById("videoPantalla");
 const video = document.getElementById("video");
 const final = document.getElementById("final");
 
-boton.onclick = function(){
+inicio.addEventListener("click", iniciarInvitacion);
 
-    inicio.style.display="none";
-    videoPantalla.style.display="block";
+function iniciarInvitacion(){
 
-    video.play();
+    inicio.style.display = "none";
+    videoPantalla.style.display = "block";
 
-};
+    video.load();
 
-video.onended = function(){
+    const playPromise = video.play();
 
-    videoPantalla.style.display="none";
-    final.style.display="block";
+    if(playPromise !== undefined){
+        playPromise.catch(error => {
+            console.error("Error reproduciendo video:", error);
 
-};
+            // Mostrar controles si el navegador bloquea autoplay
+            video.controls = true;
+        });
+    }
+}
+
+video.addEventListener("ended", () => {
+
+    videoPantalla.style.display = "none";
+    final.style.display = "block";
+
+});
+
+video.addEventListener("error", () => {
+
+    alert("No se pudo cargar el video.");
+
+    console.error(video.error);
+
+});
 
 </script>
 
